@@ -2,8 +2,8 @@
 
 ## Features
 
-- Easily track the status of your forms
-- Re-render the component only when you need it
+- Easily manage the state of your forms
+- Re-render the component only when needed
 - Type-safety and automatic transformation of form values
   - `number` and `date` inputs are transformed to `number` and `Date` respectively
 - Simplicity (it doesn't do that much for now lol)
