@@ -30,12 +30,14 @@ export default function AddTransactionForm({ onSubmit }: Props) {
       title: "Food",
       amount: 50_000,
     },
+
     // transaction is of type Transaction
     onSubmit(transaction) {
       onSubmit(transaction);
     },
     // Or also just
     // onSubmit,
+
     // If you don't wan't to manually enable re-rendering on all inputs, use this
     // renderAllChanges: true,
   });
