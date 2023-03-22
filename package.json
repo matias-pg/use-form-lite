@@ -1,6 +1,5 @@
 {
   "name": "use-form-lite",
-  "private": true,
   "version": "0.1.0",
   "description": "Simple React hook for managing form state",
   "type": "module",
