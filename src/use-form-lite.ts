@@ -1,4 +1,10 @@
-import { ChangeEvent, ChangeEventHandler, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  ChangeEventHandler,
+  FormEvent,
+  useRef,
+  useState,
+} from "react";
 
 // Add more elements as needed (these are the ones I remember for now)
 type FormElement = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
@@ -27,6 +33,9 @@ type FormConfig<T> = {
 
   /** Whether to re-render when any value changes. */
   renderAllChanges?: boolean;
+
+  /** Function that's called when the form is submitted. */
+  onSubmit?: (value: T) => void;
 };
 
 type HandleChangeConfig = {
@@ -99,7 +108,6 @@ export default function useForm<T>(config: FormConfig<T>) {
      * Partially updates the form value.
      *
      * @param changes Changes to be made
-     * @param render Whether to re-render
      */
     patchValue(
       changes: Partial<T>,
@@ -108,6 +116,15 @@ export default function useForm<T>(config: FormConfig<T>) {
       formValue.current = { ...formValue.current, ...changes };
 
       rerenderIf(render);
+    },
+
+    /**
+     * Handles the submit event of this form.
+     */
+    handleSubmit(event: FormEvent<HTMLFormElement>) {
+      event.preventDefault();
+
+      config.onSubmit?.(formValue.current);
     },
   };
 }

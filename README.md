@@ -24,25 +24,24 @@ type Props = {
 };
 
 export default function AddTransactionForm({ onSubmit }: Props) {
-  const { value, handleChange, getValue } = useForm<Transaction>({
+  const { value, handleChange, handleSubmit } = useForm<Transaction>({
     initialValue: {
       type: "EXPENSE",
       title: "Food",
       amount: 50_000,
     },
+    // transaction is of type Transaction
+    onSubmit(transaction) {
+      onSubmit(transaction);
+    },
+    // Or also just
+    // onSubmit,
     // If you don't wan't to manually enable re-rendering on all inputs, use this
     // renderAllChanges: true,
   });
 
-  function onSubmitForm(event: FormEvent) {
-    event.preventDefault();
-
-    // Sends back a `Transaction`
-    onSubmit(getValue());
-  }
-
   return (
-    <form onSubmit={onSubmitForm}>
+    <form onSubmit={handleSubmit}>
       <div>
         <label htmlFor="type">Type</label>
         {/*
@@ -94,7 +93,6 @@ export default function AddTransactionForm({ onSubmit }: Props) {
 
 - (!) Testing
 - Add support for checkboxes: for now it uses only the `value` attribute, but it should use `checked` for them
-- Allow configuring an `onSubmit` handler that receives the current form value as the first argument, and return a `handleSubmit` function that can be set as in `<form onSubmit={handleSubmit}>`
 - (?) Validation by allowing the integration of external libraries
 - (?) Move `index.d.ts` to `dist/`
 

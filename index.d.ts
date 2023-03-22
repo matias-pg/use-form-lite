@@ -1,12 +1,14 @@
 /// <reference types="react" />
 declare module "use-form-lite" {
-    import { ChangeEventHandler } from "react";
+    import { ChangeEventHandler, FormEvent } from "react";
     type FormElement = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
     type FormConfig<T> = {
         /** The initial value of this form. */
         initialValue: T;
         /** Whether to re-render when any value changes. */
         renderAllChanges?: boolean;
+        /** Function that's called when the form is submitted. */
+        onSubmit?: (value: T) => void;
     };
     type HandleChangeConfig = {
         /** Whether to re-render when the value changes. */
@@ -44,8 +46,11 @@ declare module "use-form-lite" {
          * Partially updates the form value.
          *
          * @param changes Changes to be made
-         * @param render Whether to re-render
          */
         patchValue(changes: Partial<T>, { render }?: HandleChangeConfig): void;
+        /**
+         * Handles the submit event of this form.
+         */
+        handleSubmit(event: FormEvent<HTMLFormElement>): void;
     };
 }
