@@ -1,0 +1,45 @@
+{
+  "name": "use-form-lite",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Simple React hook for managing form state",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build && npm run build:types",
+    "preview": "vite preview",
+    "build:types": "tsc --noEmit false --declaration --emitDeclarationOnly true --isolatedModules false --out index.d.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/matias-pg/use-form-lite.git"
+  },
+  "keywords": [
+    "react",
+    "hook",
+    "form"
+  ],
+  "author": "Matías Pizarro",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/matias-pg/use-form-lite/issues"
+  },
+  "homepage": "https://github.com/matias-pg/use-form-lite#readme",
+  "devDependencies": {
+    "@types/react": "^18.0.28",
+    "react": "^18.2.0",
+    "typescript": "^4.9.3",
+    "vite": "^4.1.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/use-form-lite.umd.cjs",
+  "module": "./dist/use-form-lite.js",
+  "exports": {
+    ".": {
+      "import": "./dist/use-form-lite.js",
+      "require": "./dist/use-form-lite.umd.cjs"
+    }
+  }
+}
