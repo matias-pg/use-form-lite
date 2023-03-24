@@ -26,6 +26,7 @@
   "homepage": "https://github.com/matias-pg/use-form-lite#readme",
   "devDependencies": {
     "@types/react": "^18.0.28",
+    "husky": "^8.0.3",
     "react": "^18.2.0",
     "typescript": "^4.9.3",
     "vite": "^4.1.0"
