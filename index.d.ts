@@ -2,7 +2,7 @@
 declare module "use-form-lite" {
     import { ChangeEventHandler, FormEvent } from "react";
     type FormElement = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
-    type FormConfig<T> = {
+    type Options<T> = {
         /** The initial value of this form. */
         initialValue: T;
         /** Whether to re-render when any value changes. */
@@ -10,18 +10,17 @@ declare module "use-form-lite" {
         /** Function that's called when the form is submitted. */
         onSubmit?: (value: T) => void;
     };
-    type HandleChangeConfig = {
+    type HandleChangeOptions = {
         /** Whether to re-render when the value changes. */
         render?: boolean;
     };
     /**
-     * Returns an object containing the current form value and a function that
-     * creates event handlers for when a field value changes.
+     * Initializes the form state.
      *
-     * @param config Form configuration
-     * @returns An object containing the current value of the
+     * @param options Options to configure the behavior of this hook
+     * @returns An object containing fields/methods to read/update the form state
      */
-    export default function useForm<T>(config: FormConfig<T>): {
+    export default function useForm<T>(options: Options<T>): {
         /**
          * Returns the form value until the last render.
          *
@@ -41,13 +40,13 @@ declare module "use-form-lite" {
          * @param fieldName Name of the field
          * @returns The event handler
          */
-        handleChange<E extends FormElement>(fieldName: keyof T, { render }?: HandleChangeConfig): ChangeEventHandler<E>;
+        handleChange<E extends FormElement>(fieldName: keyof T, options?: HandleChangeOptions): ChangeEventHandler<E>;
         /**
          * Partially updates the form value.
          *
          * @param changes Changes to be made
          */
-        patchValue(changes: Partial<T>, { render }?: HandleChangeConfig): void;
+        patchValue(changes: Partial<T>, options?: HandleChangeOptions): void;
         /**
          * Handles the submit event of this form.
          */

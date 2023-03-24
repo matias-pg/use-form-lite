@@ -27,7 +27,7 @@ function transformValue(value: string, fieldType: string) {
     : value;
 }
 
-type FormConfig<T> = {
+type Options<T> = {
   /** The initial value of this form. */
   initialValue: T;
 
@@ -38,21 +38,20 @@ type FormConfig<T> = {
   onSubmit?: (value: T) => void;
 };
 
-type HandleChangeConfig = {
+type HandleChangeOptions = {
   /** Whether to re-render when the value changes. */
   render?: boolean;
 };
 
 /**
- * Returns an object containing the current form value and a function that
- * creates event handlers for when a field value changes.
+ * Initializes the form state.
  *
- * @param config Form configuration
- * @returns An object containing the current value of the
+ * @param options Options to configure the behavior of this hook
+ * @returns An object containing fields/methods to read/update the form state
  */
-export default function useForm<T>(config: FormConfig<T>) {
+export default function useForm<T>(options: Options<T>) {
   // Use a ref so we don't re-render the whole component when a value changes
-  const formValue = useRef<T>(config.initialValue);
+  const formValue = useRef<T>(options.initialValue);
 
   // Since we don't re-render on value changes, we still need a way to
   // re-render when a specific field changes, e.g. when a field is conditionally
@@ -61,8 +60,8 @@ export default function useForm<T>(config: FormConfig<T>) {
   // I saw on SWR's codebase a few years ago
   const [, rerender] = useState({});
 
-  function rerenderIf(render: boolean) {
-    if (render || config.renderAllChanges) {
+  function reRenderIf(render = false) {
+    if (render || options.renderAllChanges) {
       // This always re-renders since it sets a different reference
       rerender({});
     }
@@ -94,13 +93,13 @@ export default function useForm<T>(config: FormConfig<T>) {
      */
     handleChange<E extends FormElement>(
       fieldName: keyof T,
-      { render = false }: HandleChangeConfig = {}
+      options: HandleChangeOptions = {}
     ): ChangeEventHandler<E> {
       return ({ currentTarget: { value, type } }: ChangeEvent<E>) => {
         const newValue = transformValue(value, type);
         formValue.current = { ...formValue.current, [fieldName]: newValue };
 
-        rerenderIf(render);
+        reRenderIf(options.render);
       };
     },
 
@@ -109,13 +108,10 @@ export default function useForm<T>(config: FormConfig<T>) {
      *
      * @param changes Changes to be made
      */
-    patchValue(
-      changes: Partial<T>,
-      { render = false }: HandleChangeConfig = {}
-    ) {
+    patchValue(changes: Partial<T>, options: HandleChangeOptions = {}) {
       formValue.current = { ...formValue.current, ...changes };
 
-      rerenderIf(render);
+      reRenderIf(options.render);
     },
 
     /**
@@ -124,7 +120,7 @@ export default function useForm<T>(config: FormConfig<T>) {
     handleSubmit(event: FormEvent<HTMLFormElement>) {
       event.preventDefault();
 
-      config.onSubmit?.(formValue.current);
+      options.onSubmit?.(formValue.current);
     },
   };
 }
