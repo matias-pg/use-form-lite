@@ -31,7 +31,8 @@
     "vite": "^4.1.0"
   },
   "files": [
-    "dist"
+    "dist",
+    "index.d.ts"
   ],
   "main": "./dist/use-form-lite.umd.cjs",
   "module": "./dist/use-form-lite.js",
