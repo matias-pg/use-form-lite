@@ -1,16 +1,21 @@
-import { useRef as d, useState as V } from "react";
+import { useRef as d, useState as h } from "react";
 const a = {
-  number: (e) => Number(e),
+  number: ({ value: e }) => Number(e),
+  checkbox: ({ checked: e }) => e,
   // The timezone is missing on purpose to use the local one
-  date: (e) => new Date(e + "T00:00:00")
+  date: ({ value: e }) => new Date(e + "T00:00:00")
 };
-function h(e, r) {
-  return r in a ? a[r](e) : e;
+function V(e) {
+  if (e.type in a) {
+    const r = a[e.type];
+    return r(e);
+  }
+  return e.value;
 }
-function R(e) {
-  const r = d(e.initialValue), [, c] = V({});
-  function t(n = !1) {
-    (n || e.renderAllChanges) && c({});
+function m(e) {
+  const r = d(e.initialValue), [, c] = h({});
+  function u(t = !1) {
+    (t || e.renderAllChanges) && c({});
   }
   return {
     /**
@@ -29,15 +34,22 @@ function R(e) {
       return r.current;
     },
     /**
+     * Handles the submit event of this form.
+     */
+    handleSubmit(t) {
+      var n;
+      t.preventDefault(), (n = e.onSubmit) == null || n.call(e, r.current);
+    },
+    /**
      * Creates an event handler that updates the value of a form field.
      *
      * @param fieldName Name of the field
      * @returns The event handler
      */
-    handleChange(n, u = {}) {
-      return ({ currentTarget: { value: l, type: f } }) => {
-        const m = h(l, f);
-        r.current = { ...r.current, [n]: m }, t(u.render);
+    handleChange(t, n = {}) {
+      return ({ currentTarget: l }) => {
+        const f = V(l);
+        r.current = { ...r.current, [t]: f }, u(n.render);
       };
     },
     /**
@@ -45,18 +57,11 @@ function R(e) {
      *
      * @param changes Changes to be made
      */
-    patchValue(n, u = {}) {
-      r.current = { ...r.current, ...n }, t(u.render);
-    },
-    /**
-     * Handles the submit event of this form.
-     */
-    handleSubmit(n) {
-      var u;
-      n.preventDefault(), (u = e.onSubmit) == null || u.call(e, r.current);
+    patchValue(t, n = {}) {
+      r.current = { ...r.current, ...t }, u(n.render);
     }
   };
 }
 export {
-  R as default
+  m as default
 };

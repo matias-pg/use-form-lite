@@ -7,24 +7,28 @@ import {
 } from "react";
 
 // Add more elements as needed (these are the ones I remember for now)
-type FormElement = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+type FormField = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
 
-// TODO: Use "extractors" to use different properties depending on the type
-// (e.g. use `checked` for checkboxes) rather than just the value property
-const VALUE_TRANSFORMERS = {
-  number: (value: string) => Number(value),
+const EXTRACTORS_BY_TYPE = {
+  number: ({ value }: HTMLInputElement) => Number(value),
+
+  checkbox: ({ checked }: HTMLInputElement) => checked,
 
   // The timezone is missing on purpose to use the local one
-  date: (value: string) => new Date(value + "T00:00:00"),
+  date: ({ value }: HTMLInputElement) => new Date(value + "T00:00:00"),
 };
 
+type Extractor = keyof typeof EXTRACTORS_BY_TYPE;
+
 /**
- * Transforms a value depending on the field type.
+ * Extracts the value depending on the field type.
  */
-function transformValue(value: string, fieldType: string) {
-  return fieldType in VALUE_TRANSFORMERS
-    ? VALUE_TRANSFORMERS[fieldType as keyof typeof VALUE_TRANSFORMERS](value)
-    : value;
+function extractValue(formField: FormField) {
+  if (formField.type in EXTRACTORS_BY_TYPE) {
+    const extractor = EXTRACTORS_BY_TYPE[formField.type as Extractor];
+    return extractor(formField as Parameters<typeof extractor>[0]);
+  }
+  return formField.value;
 }
 
 type Options<T> = {
@@ -86,18 +90,27 @@ export default function useForm<T>(options: Options<T>) {
     },
 
     /**
+     * Handles the submit event of this form.
+     */
+    handleSubmit(event: FormEvent<HTMLFormElement>) {
+      event.preventDefault();
+
+      options.onSubmit?.(formValue.current);
+    },
+
+    /**
      * Creates an event handler that updates the value of a form field.
      *
      * @param fieldName Name of the field
      * @returns The event handler
      */
-    handleChange<E extends FormElement>(
+    handleChange<E extends FormField>(
       fieldName: keyof T,
       options: HandleChangeOptions = {}
     ): ChangeEventHandler<E> {
-      return ({ currentTarget: { value, type } }: ChangeEvent<E>) => {
-        const newValue = transformValue(value, type);
-        formValue.current = { ...formValue.current, [fieldName]: newValue };
+      return ({ currentTarget }: ChangeEvent<E>) => {
+        const fieldValue = extractValue(currentTarget);
+        formValue.current = { ...formValue.current, [fieldName]: fieldValue };
 
         reRenderIf(options.render);
       };
@@ -112,15 +125,6 @@ export default function useForm<T>(options: Options<T>) {
       formValue.current = { ...formValue.current, ...changes };
 
       reRenderIf(options.render);
-    },
-
-    /**
-     * Handles the submit event of this form.
-     */
-    handleSubmit(event: FormEvent<HTMLFormElement>) {
-      event.preventDefault();
-
-      options.onSubmit?.(formValue.current);
     },
   };
 }

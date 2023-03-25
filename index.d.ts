@@ -1,7 +1,7 @@
 /// <reference types="react" />
 declare module "use-form-lite" {
     import { ChangeEventHandler, FormEvent } from "react";
-    type FormElement = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+    type FormField = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
     type Options<T> = {
         /** The initial value of this form. */
         initialValue: T;
@@ -35,21 +35,21 @@ declare module "use-form-lite" {
          */
         getValue(): T;
         /**
+         * Handles the submit event of this form.
+         */
+        handleSubmit(event: FormEvent<HTMLFormElement>): void;
+        /**
          * Creates an event handler that updates the value of a form field.
          *
          * @param fieldName Name of the field
          * @returns The event handler
          */
-        handleChange<E extends FormElement>(fieldName: keyof T, options?: HandleChangeOptions): ChangeEventHandler<E>;
+        handleChange<E extends FormField>(fieldName: keyof T, options?: HandleChangeOptions): ChangeEventHandler<E>;
         /**
          * Partially updates the form value.
          *
          * @param changes Changes to be made
          */
         patchValue(changes: Partial<T>, options?: HandleChangeOptions): void;
-        /**
-         * Handles the submit event of this form.
-         */
-        handleSubmit(event: FormEvent<HTMLFormElement>): void;
     };
 }

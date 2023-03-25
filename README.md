@@ -31,14 +31,14 @@ export default function AddTransactionForm({ onSubmit }: Props) {
       amount: 50_000,
     },
 
-    // transaction is of type Transaction
+    // transaction is of type Transaction:
     onSubmit(transaction) {
       onSubmit(transaction);
     },
-    // Or also just
+    // Could also just be:
     // onSubmit,
 
-    // If you don't wan't to manually enable re-rendering on all inputs, use this
+    // If you don't wan't to manually enable re-rendering on every field:
     // renderAllChanges: true,
   });
 
@@ -94,7 +94,6 @@ export default function AddTransactionForm({ onSubmit }: Props) {
 ## TODO
 
 - (!) Testing
-- Add support for checkboxes: for now it uses only the `value` attribute, but it should use `checked` for them
 - (?) Validation by allowing the integration of external libraries
 - (?) Move `index.d.ts` to `dist/`
 
